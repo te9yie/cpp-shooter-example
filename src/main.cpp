@@ -1,3 +1,5 @@
+#include "shooter/frame.h"
+
 int main(int /*argc*/, char* /*argv*/[]) {
 #if defined(_MSC_VER)
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -17,6 +19,8 @@ int main(int /*argc*/, char* /*argv*/[]) {
   ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
   ImGui_ImplSDLRenderer_Init(renderer);
 
+  shooter::Frame frame;
+
   bool loop = true;
   while (loop) {
     {
@@ -34,11 +38,20 @@ int main(int /*argc*/, char* /*argv*/[]) {
       }
     }
 
+    shooter::update_frame(&frame);
+
     ImGui_ImplSDLRenderer_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
     ImGui::ShowDemoWindow();
+
+    {
+      ImGui::Begin("frame");
+      ImGui::Text("delta: %.3f(%lu ms)", frame.delta_sec(), frame.delta_msec());
+      ImGui::Text("frame: %lu", frame.frame_count);
+      ImGui::End();
+    }
 
     ImGui::Render();
 
